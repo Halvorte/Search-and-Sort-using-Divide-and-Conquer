@@ -2,6 +2,8 @@ import csv
 import random
 import math
 
+comparison_count = 0
+
 # Quick sort
 
 # First we need the latitude values of the cities
@@ -19,7 +21,7 @@ def sort(array):
 
     # Function to do the quick sorting
     def quick_sort(array, low, high):
-
+        global comparison_count
         # Check that high (len(array)-1) is bigger than low (0)
         if high <= low:
             return
@@ -36,6 +38,8 @@ def sort(array):
         j = low
         for i in range(low+1, high+1):
             # Is the current element in the array smaller than the first element, which is the pivot.
+            # Also add one to the comparison count
+            comparison_count += 1
             if array[i] < array[low]:
 
                 j += 1
@@ -139,3 +143,4 @@ print(lat)
 #print(array_test)
 sort(lat)
 print(lat)
+print(f'Comparison count: {comparison_count}')
