@@ -84,9 +84,9 @@ def find_city(target, dictionaries):
 
 # Getting the lat of the cities
 lat, dictionaries = csv_reader()
-print(f'Len lat: {len(lat)}')
+#print(f'Len lat: {len(lat)}')
 
-print(dictionaries)
+#print(dictionaries)
 
 
 # Sorted latitudes
@@ -94,12 +94,13 @@ print(dictionaries)
 
 # Sorting using mergesort
 new_mergeSort(lat)
-print(f'After sort:')
-print(lat)
+#print(f'After sort:')
+#print(lat)
 
 # Setting target, and getting city name if target is found
 target = 40.3635
 if binary_search(lat, target) is True:
+    print('City:')
     find_city(target, dictionaries)
 
 

@@ -180,7 +180,9 @@ sorted_dictionaries = sort_by_distance(dict)
 
 
 
-print(f'Sorted dicts: {sorted_dictionaries}')
+print(f'Sorted dicts:')
+for k in sorted_dictionaries:
+    print(k)
 print(f'number of sorted dicts: {len(sorted_dictionaries)}')
 
 print(f'Number of merges: {merge_count}')

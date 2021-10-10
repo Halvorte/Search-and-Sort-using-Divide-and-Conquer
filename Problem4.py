@@ -1,5 +1,15 @@
 import csv
 import random
+import sys
+
+# Define class for nodes
+class Node:
+    def __init__(self, key, freq):
+        self.key = key
+        self.freq = freq
+
+    def __str__(self):
+        return f'Node(key={self.key}, freq={self.freq})'
 
 def csv_reader():
     A = []
@@ -19,27 +29,79 @@ def csv_reader():
     return A, dicts
 
 
-def summ(freq, i, j):
-    return sum(freq[i:j])
 
-def optimal_binary_search_tree(sorted_list, frequency, n):
-    return opt_cost(freq, 0, n-1)
+def optimal_binary_search_tree(nodes):
+
+    # Sorts the nodes by key
+    nodes.sort(key=lambda node: node.key)
+    n = len(nodes)
+
+    keys = []
+    freqs = []
+    for i in range(n):
+        keys.append(nodes[i].key)
+        freqs.append(nodes[i].freq)
 
 
-def opt_cost(freq, i, j):
-    if j < i:
+    # Creating 2d array that stores the tree cost
+    dp = [[freqs[i] if i == j else 0 for j in range(n)]for i in range(n)]
+
+    # sum[i][j] stores the sum of key frequencies
+    sum = [[i if i == j else 0 for j in range(n)]for i in range(n)]
+
+    # Stores tree roots that will be used to construct the binary search tree
+    root = [[i if i == j else 0 for j in range(n)]for i in range(n)]
+
+
+    # j is interval length
+    for j in range(2, n + 1):
+        for k in range(n - j + 1):
+            l = k + j - 1
+
+            # sys.maxsize makes it "infinite"
+            dp[k][l] = sys.maxsize
+            sum[k][l] = sum[k][l - 1] + freqs[l]
+
+
+            for r in range(root[k][l - 1], root[k + 1][l] + 1):
+                # Optimal cost for left subtree
+                left = dp[k][r - 1] if r != k else 0
+                # Optimal cost for right subtree
+                right = dp[r + 1][l] if r != l else 0
+
+                cost = left + sum[k][l] + right
+
+
+                if dp[k][l] > cost:
+                    dp[k][l] = cost
+                    root[k][l] = r
+
+    print('Binary search tree nodes:')
+    for node in nodes:
+        print(node)
+
+    print(f'Cost of optimal tree is {dp[0][n - 1]}.')
+
+    # Function to print binary search tree
+    print_bst(root, keys, 0, n - 1, -1, False)
+
+
+# Function to print bst
+def print_bst(root, key, i, j, parent, is_left):
+    if i > j or i < 0 or j > len(root) - 1:
         return
-    if j == i:
-        return freq[i]
 
-    tsum = summ(freq, i, j)
-    min = max
+    node = root[i][j]
+    # Root does not have parent
+    if parent == -1:
+        print(f'{key[node]} is the root of the tree')
+    elif is_left:
+        print(f'{key[node]} is the left child of key {parent}.')
+    else:
+        print(f'{key[node]} is the right child of key {parent}.')
 
-    for r in range(i, j + 1):
-        cost = opt_cost(freq, i, r - 1) + opt_cost(freq, r + 1, j)
-        if cost < min:
-            cost = min
-    return tsum + min,
+    print_bst(root, key, i, node - 1, key[node], True)
+    print_bst(root, key, node + 1, j, key[node], False)
 
 
 
@@ -48,11 +110,32 @@ lat, dicts = csv_reader()
 
 #set frequencies
 freq = []
-for i in dicts:
+for m in dicts:
     freq.append(random.randint(0,10))
 
-print(len(lat))
-print(len(freq))
 
-print(dicts)
-print(len(dicts))
+# Example keys and frequencies
+ex_keys = [1, 2, 3, 4, 5]
+ex_freq = [.213, .020, .547, .100, .120]
+n = 5
+
+# Create the nodes needed
+nodes = []
+for q in range(len(lat)):
+    node = Node(lat[q], freq[q])
+    nodes.append(node)
+    '''
+for q in range(len(ex_keys)):
+    node = Node(ex_keys[q], ex_freq[q])
+    nodes.append(node)
+    '''
+
+# Takes sorted by keys nodes.
+optimal_binary_search_tree(nodes)
+
+
+#print(len(lat))
+#print(len(freq))
+
+#print(dicts)
+#print(len(dicts))
