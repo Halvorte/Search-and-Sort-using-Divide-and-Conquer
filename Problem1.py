@@ -25,9 +25,10 @@ def csv_reader():
             distance = distance_haversine(lat, lng)
             dicts.append({'lat': lat, 'lng': lng, 'distance': distance})
 
-    #print(f'B: {B}')
     return A, dicts
 
+
+# Function to calculate distance between two points on earth
 def distance_haversine(lat, lng):
     lat1 = lat
     lon1 = lng
@@ -137,13 +138,36 @@ def new_merge(left, right, array):
 
     print(array)
 
+def sort_by_distance(dict):
+    distances = []
+
+    for i in dict:
+        data = i['distance']
+        # i.get('distance', dist)
+        distances.append(data)
+
+    # Sorting the distances.
+    new_mergeSort(distances)
+    print(distances)
+
+    sorted_dicts = []
+
+    for j in distances:
+        for k in dict:
+            if j == k['distance']:
+                sorted_dicts.append(k)
+
+    return sorted_dicts
 
 #print(csv_reader())
 #print()
 
 # Merge sort
+
+# getting
 lat, dict = csv_reader()
 print(f'Distance: {dict}')
+
 #print(f'before shuffle: {lat}')
 random.shuffle(lat)
 #print(f'After shuffle: {lat}')
@@ -152,33 +176,11 @@ random.shuffle(lat)
 #print(sortedLat)
 array_test = [5,6,2,9,5,3,1,0,9,7]
 
-distances = []
+sorted_dictionaries = sort_by_distance(dict)
 
-for i in dict:
-    data = i['distance']
-    #i.get('distance', dist)
-    distances.append(data)
 
-#print(f'len of lat {len(lat)}')
-#print(f'Distances: {distances}')
-#print(f'len of distances {len(distances)}')
 
-# Sorting the latitudes.
-#new_mergeSort(lat)
-#print(lat)
-
-# Sorting the distances.
-new_mergeSort(distances)
-print(distances)
-
-sorted_dicts = []
-
-for j in distances:
-    for k in dict:
-        if j == k['distance']:
-            sorted_dicts.append(k)
-
-print(f'Sorted dicts: {sorted_dicts}')
-print(f'number of sorted dicts: {len(sorted_dicts)}')
+print(f'Sorted dicts: {sorted_dictionaries}')
+print(f'number of sorted dicts: {len(sorted_dictionaries)}')
 
 print(f'Number of merges: {merge_count}')

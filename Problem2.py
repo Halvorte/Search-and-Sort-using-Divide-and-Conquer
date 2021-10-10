@@ -1,6 +1,7 @@
 import csv
 import random
 import math
+from math import radians, cos, sin, asin, sqrt
 
 comparison_count = 0
 
@@ -9,11 +10,45 @@ comparison_count = 0
 # First we need the latitude values of the cities
 def csv_reader():
     A = []
+    B = []
+    dicts = []
     with open("Cities file/worldcities.csv", encoding="utf8", newline='') as csv_file:
         csv_reader = csv.DictReader(csv_file)
         for row in csv_reader:
             A.append(float(row['lat']))
-    return A
+            B.append(float(row['lng']))
+
+            # Adding the lat and lng to a dictionary
+            lat = float(row['lat'])
+            lng = float(row['lng'])
+            distance = distance_haversine(lat, lng)
+            dicts.append({'lat': lat, 'lng': lng, 'distance': distance})
+
+    return A, dicts
+
+
+# Function to calculate distance between two points on earth
+def distance_haversine(lat, lng):
+    lat1 = lat
+    lon1 = lng
+    lat2 = 0.0
+    lon2 = 0.0
+
+    """
+    Calculate the great circle distance in kilometers between two points 
+    on the earth (specified in decimal degrees)
+    """
+    # convert decimal degrees to radians
+    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+
+    # haversine formula
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+    c = 2 * asin(sqrt(a))
+    r = 6371 # Radius of earth in kilometers. Use 3956 for miles. Determines return value units.
+    distance = c * r
+    return distance
 
 
 # Function for the quick sorting
@@ -124,13 +159,33 @@ def pivot(array, low, high):
     return item + 1
 
 
+def sort_by_distance(dict):
+    distances = []
+
+    for i in dict:
+        data = i['distance']
+        # i.get('distance', dist)
+        distances.append(data)
+
+    # Sorting the distances.
+    sort(distances)
+    print(distances)
+
+    sorted_dicts = []
+
+    for j in distances:
+        for k in dict:
+            if j == k['distance']:
+                sorted_dicts.append(k)
+
+    return sorted_dicts
 
 
 
 array_test = [5,6,2,9,5,3,1,0,9,7]
 
 # Getting the latitudes from cities
-lat = csv_reader()
+lat, dictionaries = csv_reader()
 print(lat)
 #sorted = quick_sort(array_test)
 #print(f'sorted: {sorted}')
@@ -144,3 +199,8 @@ print(lat)
 sort(lat)
 print(lat)
 print(f'Comparison count: {comparison_count}')
+print(dictionaries)
+
+sorted_dictionaries = sort_by_distance(dictionaries)
+print('Sorted dicts')
+print(sorted_dictionaries)
